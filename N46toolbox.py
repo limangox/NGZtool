@@ -11,44 +11,6 @@ from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 
 st.set_page_config(page_title="N46综合", layout="wide")
-st.write('''  
-<div id="scroll-to-top">  
-  <button onclick="topFunction()" id="myBtn" title="Go to top">Top</button>  
-</div>  
-
-<style>  
-#scroll-to-top {  
-  position: fixed;  
-  bottom: 20px;  
-  right: 20px;  
-  display: none;  
-  width: 50px;  
-  height: 50px;  
-  background-color: purple;  
-  color: white;  
-  text-align: center;  
-  line-height: 50px;  
-  border-radius: 50%;  
-  z-index: 9999;  
-}  
-</style>  
-
-<script>  
-window.onscroll = function() {scrollFunction()};  
-function scrollFunction() {  
-  var mybutton = document.getElementById("myBtn");  
-  if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {  
-    mybutton.style.display = "block";  
-  } else {  
-    mybutton.style.display = "none";  
-  }  
-}  
-function topFunction() {  
-  document.body.scrollTop = 0; // For Safari  
-  document.documentElement.scrollTop = 0; // For Chrome, Firefox, IE and Opera  
-}  
-</script>  
-''', unsafe_allow_html=True)
 datetime = datetime.datetime.now().strftime("%Y%m")
 
 
