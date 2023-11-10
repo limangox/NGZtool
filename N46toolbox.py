@@ -5,7 +5,6 @@ import requests
 import json
 import datetime
 import streamlit as st
-import pyshorteners as ps
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
