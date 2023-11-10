@@ -138,7 +138,7 @@ def blog():
     }
 
     #container {
-      	max-width: 50%;
+      	max-width: 80%;
        	margin: 0 auto;
       	margin-top: 2vh;
       	display: flex;
