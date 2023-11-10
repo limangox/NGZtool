@@ -151,6 +151,12 @@ def blog():
       /* 在 container 上方添加空白区域（视窗高度的 20% 位置） */
       margin-top: 2vh;
     }
+    /* 在屏幕宽度小于或等于 600px 时应用以下样式 */
+@media only screen and (max-width: 600px) {
+  #container {
+    max-width: 100%; /* 或者设置其他固定值 */
+  }
+}
 
     .card {
       /* 修改背景色 */
