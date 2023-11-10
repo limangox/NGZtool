@@ -850,7 +850,7 @@ def schedule():
                         st.write(schedule_text, unsafe_allow_html=True)
 
 
-selected1 = option_menu(None, ['乃木坂46日程', "乃木坂46新闻", "成员Blog", "新闻抓图", ],
+selected1 = option_menu(None, ['乃日程', "乃新闻", "Blog", "新闻抓图", ],
                         icons=['calendar3', 'newspaper', 'book', "search", ],
                         menu_icon="cast", default_index=0, orientation="horizontal",
                         styles={
@@ -859,11 +859,11 @@ selected1 = option_menu(None, ['乃木坂46日程', "乃木坂46新闻", "成员
                             "nav-link-selected": {"background-color": "#9e3eb2", 'color': 'white'},
                         })
 
-if selected1 == "乃木坂46日程":
+if selected1 == "乃日程":
     schedule()
-if selected1 == "乃木坂46新闻":
+if selected1 == "乃新闻":
     get_news()
-if selected1 == "成员Blog":
+if selected1 == "Blog":
     blog()
 if selected1 == "新闻抓图":
     news_catch()
