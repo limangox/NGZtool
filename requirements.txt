@@ -1,0 +1,3 @@
+streamlit
+bs4
+streamlit-option-menu
