@@ -14,10 +14,10 @@ datetime = datetime.datetime.now().strftime("%Y%m")
 
 
 def get_news():
-    toggle1 = st.toggle('按日期选择')
+    toggle1 = st.toggle('按日期选择', value=True)
     toggle2 = st.toggle('按月份选择')
 
-    date_sel = st.date_input('选择公告月份,默认查看当月的新闻')
+    date_sel = st.date_input('选择公告日期月份,默认查看当日的新闻')
     if toggle1:
         if toggle2:
             st.warning('请选择一种模式,不能两个一起选')
