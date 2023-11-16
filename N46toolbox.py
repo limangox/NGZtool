@@ -4,13 +4,15 @@ import re
 import requests
 import json
 import datetime
+from datetime import timezone, timedelta
 import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 
 st.set_page_config(page_title="N46综合", layout="wide")
-datetime = datetime.datetime.now(tz=Asia/Japan).strftime("%Y%m")
+tz = timezone(timedelta(hours=9))
+datetime = datetime.datetime.now(tz).strftime("%Y%m")
 
 
 def get_news():
@@ -788,6 +790,7 @@ def schedule():
         date_num = str(date_sel).replace('-', '')
         if schedule_toggle:
             date_num = str(date_sel).replace('-', '')[:6]
+        st.write(date_num)
 
         schedule_params = {
             'dy': f'{date_num}',
