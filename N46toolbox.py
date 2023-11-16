@@ -11,15 +11,16 @@ from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 
 st.set_page_config(page_title="N46综合", layout="wide")
+
 tz = timezone(timedelta(hours=9))
-datetime = datetime.datetime.now(tz).strftime("%Y%m")
+datetime = datetime.datetime.now(tz)
 
 
 def get_news():
     toggle1 = st.toggle('按日期选择', value=True)
     toggle2 = st.toggle('按月份选择')
 
-    date_sel = st.date_input('选择公告日期月份,默认查看当日的新闻')
+    date_sel = st.date_input('选择公告日期月份,默认查看当日的新闻', datetime)
     if toggle1:
         if toggle2:
             st.warning('请选择一种模式,不能两个一起选')
@@ -153,6 +154,7 @@ def blog():
       /* 在 container 上方添加空白区域（视窗高度的 20% 位置） */
       margin-top: 2vh;
     }
+    
     /* 在屏幕宽度小于或等于 600px 时应用以下样式 */
 @media only screen and (max-width: 600px) {
   #container {
@@ -221,7 +223,7 @@ def blog():
         color: #9e3eb2;
     }
 
-    .st-emotion-cache-19rxjzo{
+    .css-1x8cf1d{
         border: none;
         padding: 6px 24px;
         border-radius: 30px;
@@ -239,8 +241,8 @@ def blog():
         cursor: pointer;
     }
 
-    .st-emotion-cache-19rxjzo:focus,
-    .st-emotion-cache-19rxjzo:hover {
+    .css-1x8cf1d:focus,
+    .css-1x8cf1d:hover {
       background-color: #C46ED6;
       color: #ffffff;
     }
@@ -744,7 +746,7 @@ def news_catch():
 
 
 def schedule():
-    col1, col2, col3 = st.columns([1,2, 3], gap='medium')
+    col1, col2, col3 = st.columns([1, 2, 3], gap='medium')
     cate_info = {
         '': '',
         "live": "ライブ/イベント",
@@ -771,7 +773,7 @@ def schedule():
             for key, value in cate_info.items():
                 if value == schedule_option:
                     cate_key = key
-        date_sel = st.date_input('选择日程日期,默认查看当天的日程')
+        date_sel = st.date_input('选择日程日期,默认查看当天的日程', datetime)
 
     with col3:
 
@@ -790,7 +792,6 @@ def schedule():
         date_num = str(date_sel).replace('-', '')
         if schedule_toggle:
             date_num = str(date_sel).replace('-', '')[:6]
-        st.write(date_num)
 
         schedule_params = {
             'dy': f'{date_num}',
@@ -827,7 +828,7 @@ def schedule():
 
                 for date, schedules in date_dict.items():
                     st.write(f"{date}")
-                    st.write('<div style="padding-top:0"></div>',unsafe_allow_html=True)
+                    st.write('<div style="padding-top:0"></div>', unsafe_allow_html=True)
                     for schedule in schedules:
                         if schedule[0] in ['radio', 'tv', 'web']:
                             start_time = schedule[3] if schedule[3] else ''
@@ -859,7 +860,7 @@ def schedule():
                         st.write(schedule_text, unsafe_allow_html=True)
 
 
-selected1 = option_menu(None, ['乃日程', "乃新闻", "Blog", "新闻抓图", ],
+selected1 = option_menu(None, ['乃木坂46日程', "乃木坂46新闻", "成员Blog", "新闻抓图", ],
                         icons=['calendar3', 'newspaper', 'book', "search", ],
                         menu_icon="cast", default_index=0, orientation="horizontal",
                         styles={
@@ -868,11 +869,11 @@ selected1 = option_menu(None, ['乃日程', "乃新闻", "Blog", "新闻抓图",
                             "nav-link-selected": {"background-color": "#9e3eb2", 'color': 'white'},
                         })
 
-if selected1 == "乃日程":
+if selected1 == "乃木坂46日程":
     schedule()
-if selected1 == "乃新闻":
+if selected1 == "乃木坂46新闻":
     get_news()
-if selected1 == "Blog":
+if selected1 == "成员Blog":
     blog()
 if selected1 == "新闻抓图":
     news_catch()
