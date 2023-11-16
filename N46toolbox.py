@@ -10,7 +10,7 @@ from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 
 st.set_page_config(page_title="N46综合", layout="wide")
-datetime = datetime.datetime.now().strftime("%Y%m")
+datetime = datetime.datetime.now(tz=Asia/Japan).strftime("%Y%m")
 
 
 def get_news():
