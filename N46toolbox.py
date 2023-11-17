@@ -827,7 +827,7 @@ def schedule():
                             (cate, title, link, item.get('start_time', ''), item.get('end_time', ''))]
 
                 for date, schedules in date_dict.items():
-                    st.write(f"{date}")
+                    st.info(f"{date}")
                     st.write('<div style="padding-top:0"></div>', unsafe_allow_html=True)
                     for schedule in schedules:
                         if schedule[0] in ['radio', 'tv', 'web']:
