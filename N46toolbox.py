@@ -223,7 +223,7 @@ def blog():
         color: #9e3eb2;
     }
 
-    .css-1x8cf1d{
+    .st-emotion-cache-19rxjzo{
         border: none;
         padding: 6px 24px;
         border-radius: 30px;
@@ -241,8 +241,8 @@ def blog():
         cursor: pointer;
     }
 
-    .css-1x8cf1d:focus,
-    .css-1x8cf1d:hover {
+    .st-emotion-cache-19rxjzo:focus,
+    .st-emotion-cache-19rxjzo:hover {
       background-color: #C46ED6;
       color: #ffffff;
     }
