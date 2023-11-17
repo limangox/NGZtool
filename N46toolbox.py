@@ -838,7 +838,6 @@ def schedule():
                         else:
                             schedule_text = f'<font size=1><font style="border-radius:25px;border:1px solid #AD00E5;padding:3px;">{schedule[0]}</font>  <a href="{schedule[2]}" style="text-decoration:none;color:#9e3eb2;"><font size=2>{schedule[1]}</font></a></font>'
                             st.write(schedule_text, unsafe_allow_html=True)
-                    st.write('~~~~~~')
             # 按月显示开关关闭
             if not schedule_toggle:
                 for item in data['data']:
