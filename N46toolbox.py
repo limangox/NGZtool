@@ -449,10 +449,12 @@ def news_catch():
         st.markdown(article_text, unsafe_allow_html=True)
 
     def oricon(url):
+        url_new = ''
         if 'full' not in url:
-            url = f'{url}/full/'
-
-        resp = requests.get(url).text
+            url_new = f'{url}/full/'
+        if 'full' not in url and len(url) > 38:
+            url_new = f'{url[:38]}/full/'
+        resp = requests.get(url_new).text
         # 文章标题
         article_title = re.findall('<title>(.*?)</title>', resp, re.S)[0]
         st.subheader(article_title)
@@ -495,7 +497,7 @@ def news_catch():
 
         if 'この記事の写真を見る' in resp:
             pic_num = re.findall('この記事の写真を見る（全(.*?)枚）', resp)[0]
-            photo_url = f'{url.replace("full/", "")}photo/1/'
+            photo_url = f'{url_new.replace("full/", "")}photo/1/'
 
             photo_url_resp = requests.get(photo_url).text
             soup = BeautifulSoup(photo_url_resp, 'html.parser')
