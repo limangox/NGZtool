@@ -558,7 +558,7 @@ def news_catch():
             img_contnt = '<div style="display:inline">'
             for img in range(len(img_list)):
                 pic = img_list[x]
-                img_contnt += f'''<img src='{pic}' width="50%">'''
+                img_contnt += f'''<img src='{pic}' width="30%">'''
                 x += 1
             st.markdown(img_contnt, unsafe_allow_html=True)
 
@@ -582,7 +582,7 @@ def news_catch():
             img_contnt = '<div style="display:inline">'
             for img in range(len(og_list)):
                 pic = og_list[x]
-                img_contnt += f'''<img src='{pic}' width="50%">'''
+                img_contnt += f'''<img src='{pic}' width="30%">'''
                 x += 1
             st.markdown(img_contnt, unsafe_allow_html=True)
 
