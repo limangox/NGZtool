@@ -721,7 +721,7 @@ def news_catch():
         x = 1
         st.caption(f'图片数量：{len(img_list) + 1}')
         # 图片展示
-        st.markdown(f"""<div><img src='{imageWrapper}' width="100%"></div>""", unsafe_allow_html=True)
+        st.markdown(f"""<div><img src='{imageWrapper}' width="50%"></div>""", unsafe_allow_html=True)
         i = 0
         img_contnt = '<div style="display:inline">'
         for img in range(len(img_list)):
