@@ -737,7 +737,7 @@ def news_catch():
         i = 0
         img_contnt = '<div style="display:inline">'
         for img in range(len(image_urls)):
-            pic = img_list[i].split('?')[0]
+            pic = image_urls[i].split('?')[0]
             img_contnt += f'''<img src='{pic}' width="50%">'''
             i += 1
     
