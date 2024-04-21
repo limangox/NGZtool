@@ -10,7 +10,7 @@ def create_zip(title, image_urls):
             response = requests.get(image_url)
             if response.status_code == 200:
                 # 从 URL 中提取文件名
-                filename = image_url.split('/')[-1]
+                filename = img_url.split('/')[-1].split('?')[0]
                 # 将图片数据写入压缩文件
                 zipf.writestr(filename, response.content)
     return zip_filename
