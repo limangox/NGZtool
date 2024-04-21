@@ -737,8 +737,8 @@ def news_catch():
         i = 0
         img_contnt = '<div style="display:inline">'
         for img in range(len(image_urls)):
-            pic = image_urls[i].split('?')[0]
-            img_contnt += f'''<img src='{pic}' width="50%">'''
+            pic = image_urls[i]
+            img_contnt += f'''<img src='{pic}' width="30%">'''
             i += 1
     
     if 'nikkansports' in news_url:
