@@ -53,4 +53,4 @@ def rajira(url):
 
                     # 使用正则表达式匹配图片地址
                     image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
-                    return title,(image_urls
+                    return title,image_urls
