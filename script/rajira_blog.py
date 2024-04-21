@@ -43,18 +43,14 @@ def rajira(url):
             # 使用正则表达式匹配文本段落
             matched_text = re.search(regex, json_file, re.DOTALL)
 
-            if matched_text:
+                        if matched_text:
                 paragraph_text = matched_text.group(1)
                 # 使用正则表达式提取标题
                 title_match = re.search(r'【([^】]+)】', paragraph_text)
                 if title_match:
                     title = title_match.group(1)
 
-                # 使用正则表达式匹配图片地址
-                image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
-                
-                # 返回标题和图片地址
-                return title, image_urls
 
-    # 如果出现异常或者没有找到内容，返回 None
-    return None, None
+                    # 使用正则表达式匹配图片地址
+                    image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
+                    return title,print(image_urls)
