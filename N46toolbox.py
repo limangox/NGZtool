@@ -10,6 +10,7 @@ import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 from script.rajira_blog import rajira
+from script.create_zip import create_zip
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -733,6 +734,12 @@ def news_catch():
 
     def rajira_blog(url):
         title,image_urls = rajira(url)
+        # 创建压缩文件并下载
+        if st.button("下载图片"):
+            zip_filename = create_zip(title, image_urls)
+            with open(zip_filename, "rb") as f:
+                bytes_data = f.read()
+            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
         st.title(title)
         i = 0
         img_contnt = '<div style="display:inline">'
@@ -741,6 +748,7 @@ def news_catch():
             img_contnt += f'''<img src='{pic}' width="30%">'''
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
+
     
     if 'nikkansports' in news_url:
         nikkansports(news_url)
