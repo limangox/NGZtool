@@ -23,8 +23,7 @@ def rajira(url):
 
     resp = requests.get(
         url,
-        headers=headers,
-        proxies=proxies
+        headers=headers
     )
 
     if resp.status_code == 200:
