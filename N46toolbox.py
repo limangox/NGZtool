@@ -731,7 +731,7 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
-    def rajira_blog(url=news_url):
+    def rajira_blog(url):
         title,image_urls = rajira(url)
         st.title(title)
         i = 0
@@ -740,6 +740,7 @@ def news_catch():
             pic = image_urls[i]
             img_contnt += f'''<img src='{pic}' width="30%">'''
             i += 1
+        st.markdown(img_contnt, unsafe_allow_html=True)
     
     if 'nikkansports' in news_url:
         nikkansports(news_url)
