@@ -43,7 +43,7 @@ def rajira(url):
             # 使用正则表达式匹配文本段落
             matched_text = re.search(regex, json_file, re.DOTALL)
 
-                        if matched_text:
+            if matched_text:
                 paragraph_text = matched_text.group(1)
                 # 使用正则表达式提取标题
                 title_match = re.search(r'【([^】]+)】', paragraph_text)
