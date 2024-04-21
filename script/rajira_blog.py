@@ -49,8 +49,12 @@ def rajira(url):
                 title_match = re.search(r'【([^】]+)】', paragraph_text)
                 if title_match:
                     title = title_match.group(1)
-                    return title
 
                 # 使用正则表达式匹配图片地址
                 image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
-                return image_urls
+                
+                # 返回标题和图片地址
+                return title, image_urls
+
+    # 如果出现异常或者没有找到内容，返回 None
+    return None, None
