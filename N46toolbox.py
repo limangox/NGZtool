@@ -9,6 +9,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
+from script.rajira_blog import rajira
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -730,6 +731,16 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
+    def rajira_blog(url=news_url):
+        title,image_urls = rajira(url)
+        st.title(title)
+        i = 0
+        img_contnt = '<div style="display:inline">'
+        for img in range(len(image_urls)):
+            pic = img_list[i].split('?')[0]
+            img_contnt += f'''<img src='{pic}' width="50%">'''
+            i += 1
+    
     if 'nikkansports' in news_url:
         nikkansports(news_url)
     if 'oricon' in news_url:
@@ -738,6 +749,8 @@ def news_catch():
         mantan(news_url)
     if 'mdpr' in news_url:
         mdpr(news_url)
+    if 'www.nhk.jp/p/radirer/' in news_url:
+        rajira_blog(news_url)
 
     if news_url == '':
         pass
