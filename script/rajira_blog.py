@@ -2,6 +2,7 @@ import requests
 import re
 import json
 from bs4 import BeautifulSoup
+import streamlit as st
 
 
 def rajira(url):
