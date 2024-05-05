@@ -17,7 +17,7 @@ def rajira(url):
     if '/' not in url.split('/',11)[-1]:
         url = f'{url}/'
 
-    st.write('split:',rajira_url.split('/',11)[-1])
+    st.write('split:',url.split('/',11)[-1])
     st.write('url:',url)
 
     resp = requests.get(
