@@ -14,11 +14,8 @@ def rajira(url):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     }
 
-    if '/' not in url.split('/',11)[-1]:
+    if '/' not in url.split('/',11)[-1]: # 判断结尾是否有/没有就加上
         url = f'{url}/'
-
-    st.write('split:',url.split('/',11)[-1])
-    st.write('url:',url)
 
     resp = requests.get(
         url,
