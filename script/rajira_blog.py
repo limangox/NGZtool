@@ -13,11 +13,13 @@ def rajira(url):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     }
 
-    if not url.split('/',10)[-1]:
-        url = f'{url}/'
+    rajira_url = url
+
+    if not rajira_url.split('/',10)[-1]:
+        rajira_url = f'{url}/'
 
     resp = requests.get(
-        url,
+        rajira_url,
         headers=headers
     )
 
