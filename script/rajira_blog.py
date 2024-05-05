@@ -14,15 +14,14 @@ def rajira(url):
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     }
 
-    rajira_url = url
-
-    if '/' not in rajira_url.split('/',11)[-1]:
-        rajira_url = f'{url}/'
+    if '/' not in url.split('/',11)[-1]:
+        url = f'{url}/'
 
     st.write('split:',rajira_url.split('/',11)[-1])
+    st.write('url:',url)
 
     resp = requests.get(
-        rajira_url,
+        url,
         headers=headers
     )
 
