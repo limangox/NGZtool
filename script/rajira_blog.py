@@ -18,7 +18,6 @@ def rajira(url):
         'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
         'accept-language': 'zh-CN,zh;q=0.9,ja;q=0.8,ko;q=0.7,en;q=0.6,tr;q=0.5,ru;q=0.4',
         'cache-control': 'max-age=0',
-        'if-none-match': '"2115a3-wAyrP/8f0IMntkxKKnYWMOB9R8I"',
         'priority': 'u=0, i',
         'referer': f'{url}',
         'sec-ch-ua': '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
