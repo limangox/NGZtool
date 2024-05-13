@@ -734,6 +734,8 @@ def news_catch():
 
     def rajira_blog(url):
         title,image_urls = rajira(url)
+        for i in image_urls:
+            st.write(i)
         # 创建压缩文件并下载
         if st.button("下载图片"):
             st.info('请稍等,正在将图片处理至压缩包')
