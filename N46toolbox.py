@@ -733,79 +733,80 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
-
     def rajira_blog(url):
-         headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'accept-language': 'zh-CN,zh;q=0.9,ja;q=0.8,ko;q=0.7,en;q=0.6,tr;q=0.5,ru;q=0.4',
-        'referer': f'{url}',
-        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
-    }
+        headers = {
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'accept-language': 'zh-CN,zh;q=0.9,ja;q=0.8,ko;q=0.7,en;q=0.6,tr;q=0.5,ru;q=0.4',
+            'referer': f'{url}',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+        }
 
-    resp = requests.get(
-        url,
-        headers=headers
-    )
+        resp = requests.get(
+            url,
+            headers=headers
+        )
+    
+        if resp.status_code == 200:
+            resp_text = resp.text
+            title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
+            json_file = \
+                re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[
+                    0]
+            # print(json.dumps(json.loads(json_file),ensure_ascii=False,indent=1))
+            # 使用正则表达式从地址中提取标识符
+            matched_id = re.search(r'/bp/(\w+)/', url)
+            if matched_id:
+                identifier = matched_id.group(1)
+    
+                # 使用标识符构造匹配文本段落的正则表达式
+                regex = fr'"{identifier}",\s*"(.*?)\d{{4}}-\d{{2}}-\d{{2}}T\d{{2}}:\d{{2}}:\d{{2}}\+\d{{2}}:\d{{2}}"'
+    
+                # 使用正则表达式匹配文本段落
+                matched_text = re.search(regex, json_file, re.DOTALL)
+    
+                if matched_text:
+                    paragraph_text = matched_text.group(1)
+                    # 使用正则表达式提取标题
+                    title_match = re.search(r'【([^】]+)】', paragraph_text)
+                    if title_match:
+                        title = title_match.group(1)
+                        # 使用正则表达式匹配图片地址
+                        image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
+                        # 创建压缩文件并下载
+                        if st.button("下载图片"):
+                            st.info('请稍等,正在将图片处理至压缩包')
+                            zip_filename = create_zip(title, image_urls)
+                            with open(zip_filename, "rb") as f:
+                                bytes_data = f.read()
+                            st.success('压缩完整,请点击下载')
+                            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+                        st.title(title)
+                        i = 0
+                        img_contnt = '<div style="display:inline">'
+                        for img in range(len(image_urls)):
+                            pic = image_urls[i]
+                            img_contnt += f'''<img src='{pic}' width="30%">'''
+                            i += 1
+                        st.markdown(img_contnt, unsafe_allow_html=True)
 
-    if resp.status_code == 200:
-        resp_text = resp.text
-        title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
-        json_file = \
-        re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
-        # print(json.dumps(json.loads(json_file),ensure_ascii=False,indent=1))
-        # 使用正则表达式从地址中提取标识符
-        matched_id = re.search(r'/bp/(\w+)/', url)
-        if matched_id:
-            identifier = matched_id.group(1)
 
-            # 使用标识符构造匹配文本段落的正则表达式
-            regex = fr'"{identifier}",\s*"(.*?)\d{{4}}-\d{{2}}-\d{{2}}T\d{{2}}:\d{{2}}:\d{{2}}\+\d{{2}}:\d{{2}}"'
+if 'nikkansports' in news_url:
+    nikkansports(news_url)
+if 'oricon' in news_url:
+    oricon(news_url)
+if 'mantan' in news_url:
+    mantan(news_url)
+if 'mdpr' in news_url:
+    mdpr(news_url)
+if 'www.nhk.jp/p/radirer/' in news_url:
+    rajira_blog(news_url)
 
-            # 使用正则表达式匹配文本段落
-            matched_text = re.search(regex, json_file, re.DOTALL)
-
-            if matched_text:
-                paragraph_text = matched_text.group(1)
-                # 使用正则表达式提取标题
-                title_match = re.search(r'【([^】]+)】', paragraph_text)
-                if title_match:
-                    title = title_match.group(1)
-                    # 使用正则表达式匹配图片地址
-                    image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
-                    # 创建压缩文件并下载
-                    if st.button("下载图片"):
-                        st.info('请稍等,正在将图片处理至压缩包')
-                        zip_filename = create_zip(title, image_urls)
-                        with open(zip_filename, "rb") as f:
-                            bytes_data = f.read()
-                        st.success('压缩完整,请点击下载')
-                        st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
-                    st.title(title)
-                    i = 0
-                    img_contnt = '<div style="display:inline">'
-                    for img in range(len(image_urls)):
-                        pic = image_urls[i]
-                        img_contnt += f'''<img src='{pic}' width="30%">'''
-                        i += 1
-                    st.markdown(img_contnt, unsafe_allow_html=True)
-
-    if 'nikkansports' in news_url:
-        nikkansports(news_url)
-    if 'oricon' in news_url:
-        oricon(news_url)
-    if 'mantan' in news_url:
-        mantan(news_url)
-    if 'mdpr' in news_url:
-        mdpr(news_url)
-    if 'www.nhk.jp/p/radirer/' in news_url:
-        rajira_blog(news_url)
-
-    if news_url == '':
-        pass
-    else:
-        st.markdown(
-            """<a href="#top" style="text-decoration:none;border-radius:30px;padding: 10px 10px 10px 10px;display:block;margin:5px 5px 5px 5px;background-color:#9e3eb2;color:white;text-align:center;">返回顶部</a>""",
-            unsafe_allow_html=True)
+if news_url == '':
+    pass
+else:
+    st.markdown(
+        """<a href="#top" style="text-decoration:none;border-radius:30px;padding: 10px 10px 10px 10px;display:block;margin:5px 5px 5px 5px;background-color:#9e3eb2;color:white;text-align:center;">返回顶部</a>""",
+        unsafe_allow_html=True)
 
 
 def schedule():
