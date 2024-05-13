@@ -749,6 +749,7 @@ def news_catch():
         if resp.status_code == 200:
             resp_text = resp.text
             title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
+            st.write(title)
             json_file = \
                 re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[
                     0]
