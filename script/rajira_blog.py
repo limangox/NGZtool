@@ -2,7 +2,7 @@ import requests
 import re
 import json
 from bs4 import BeautifulSoup
-
+import streamlit as st
 
 def rajira(url):
     cookies = {
@@ -24,9 +24,9 @@ def rajira(url):
         headers=headers,
         cookies=cookies
     )
-
+    st.write(resp.status_code)
     resp_text = resp.text
-    print(resp_text)
+    
     title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
     json_file = re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
     # print(json.dumps(json.loads(json_file),ensure_ascii=False,indent=1))
