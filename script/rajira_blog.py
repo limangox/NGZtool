@@ -19,7 +19,7 @@ def rajira(url):
 
     if resp.status_code == 200:
         resp_text = resp.text
-        title = re.findall('<title>(.*?)</title>', resp_text)[0]
+        title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
         json_file = \
         re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
         # print(json.dumps(json.loads(json_file),ensure_ascii=False,indent=1))
@@ -43,5 +43,3 @@ def rajira(url):
                     # 使用正则表达式匹配图片地址
                     image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
                     return title,image_urls
-                else:
-                    return None
