@@ -15,9 +15,7 @@ def rajira(url):
 }
     
     headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-        'accept-language': 'zh-CN,zh;q=0.9,ja;q=0.8,ko;q=0.7,en;q=0.6,tr;q=0.5,ru;q=0.4',
-        'referer': f'{url}',
+        'referer': url,
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     }
 
@@ -27,7 +25,7 @@ def rajira(url):
         cookies=cookies
     )
 
-    if resp.status_code == 200 or resp.status_code == 304:
+    if resp.status_code == 200:
         resp_text = resp.text
         title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
         json_file = \
