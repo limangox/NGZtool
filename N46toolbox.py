@@ -759,7 +759,7 @@ def news_catch():
         mantan(news_url)
     if 'mdpr' in news_url:
         mdpr(news_url)
-    if 'www.nhk.jp/p/radirer/' in news_url:
+    if 'radirer' in news_url:
         rajira_blog(news_url)
 
     if news_url == '':
