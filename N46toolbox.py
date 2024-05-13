@@ -745,7 +745,7 @@ def news_catch():
             url,
             headers=headers
         )
-    
+
         if resp.status_code == 200:
             resp_text = resp.text
             title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
@@ -757,13 +757,13 @@ def news_catch():
             matched_id = re.search(r'/bp/(\w+)/', url)
             if matched_id:
                 identifier = matched_id.group(1)
-    
+
                 # 使用标识符构造匹配文本段落的正则表达式
                 regex = fr'"{identifier}",\s*"(.*?)\d{{4}}-\d{{2}}-\d{{2}}T\d{{2}}:\d{{2}}:\d{{2}}\+\d{{2}}:\d{{2}}"'
-    
+
                 # 使用正则表达式匹配文本段落
                 matched_text = re.search(regex, json_file, re.DOTALL)
-    
+
                 if matched_text:
                     paragraph_text = matched_text.group(1)
                     # 使用正则表达式提取标题
@@ -790,23 +790,23 @@ def news_catch():
                         st.markdown(img_contnt, unsafe_allow_html=True)
 
 
-if 'nikkansports' in news_url:
-    nikkansports(news_url)
-if 'oricon' in news_url:
-    oricon(news_url)
-if 'mantan' in news_url:
-    mantan(news_url)
-if 'mdpr' in news_url:
-    mdpr(news_url)
-if 'www.nhk.jp/p/radirer/' in news_url:
-    rajira_blog(news_url)
-
-if news_url == '':
-    pass
-else:
-    st.markdown(
-        """<a href="#top" style="text-decoration:none;border-radius:30px;padding: 10px 10px 10px 10px;display:block;margin:5px 5px 5px 5px;background-color:#9e3eb2;color:white;text-align:center;">返回顶部</a>""",
-        unsafe_allow_html=True)
+    if 'nikkansports' in news_url:
+        nikkansports(news_url)
+    if 'oricon' in news_url:
+        oricon(news_url)
+    if 'mantan' in news_url:
+        mantan(news_url)
+    if 'mdpr' in news_url:
+        mdpr(news_url)
+    if 'www.nhk.jp/p/radirer/' in news_url:
+        rajira_blog(news_url)
+    
+    if news_url == '':
+        pass
+    else:
+        st.markdown(
+            """<a href="#top" style="text-decoration:none;border-radius:30px;padding: 10px 10px 10px 10px;display:block;margin:5px 5px 5px 5px;background-color:#9e3eb2;color:white;text-align:center;">返回顶部</a>""",
+            unsafe_allow_html=True)
 
 
 def schedule():
