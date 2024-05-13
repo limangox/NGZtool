@@ -789,7 +789,6 @@ def news_catch():
                             i += 1
                         st.markdown(img_contnt, unsafe_allow_html=True)
 
-
     if 'nikkansports' in news_url:
         nikkansports(news_url)
     if 'oricon' in news_url:
@@ -800,7 +799,7 @@ def news_catch():
         mdpr(news_url)
     if 'www.nhk.jp/p/radirer/' in news_url:
         rajira_blog(news_url)
-    
+
     if news_url == '':
         pass
     else:
