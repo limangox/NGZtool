@@ -2,6 +2,7 @@ import requests
 import re
 import json
 from bs4 import BeautifulSoup
+import streamlit as st
 
 
 def rajira(url):
@@ -40,4 +41,6 @@ def rajira(url):
                 title = title_match.group(1)
                 # 使用正则表达式匹配图片地址
                 image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
+                st.write(title)
+                st.werite(image_urls)
                 return title,image_urls
