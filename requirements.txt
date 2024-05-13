@@ -1,4 +1,4 @@
 streamlit==1.33.0
 bs4
 streamlit-option-menu
-python==3.12
+python
