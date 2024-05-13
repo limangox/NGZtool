@@ -732,7 +732,7 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
-    def rajira_blog(url):
+    def get_rajira_blog(url):
         title, image_urls = rajira(url)
         # 创建压缩文件并下载
         if st.button("下载图片"):
@@ -760,7 +760,7 @@ def news_catch():
     if 'mdpr' in news_url:
         mdpr(news_url)
     if 'radirer' in news_url:
-        rajira_blog(news_url)
+        get_rajira_blog(news_url)
 
     if news_url == '':
         pass
