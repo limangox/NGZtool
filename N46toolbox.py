@@ -9,8 +9,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
-from script.rajira_blog import rajira
-from script.create_zip import create_zip
+from script import rajira
+from script import create_zip
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
