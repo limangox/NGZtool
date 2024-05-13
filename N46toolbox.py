@@ -9,7 +9,7 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
-from scrip.get_rajira_blog import get_rajira_blog
+from script.get_rajira_blog import get_rajira_blog
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
