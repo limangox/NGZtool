@@ -1,4 +1,3 @@
 streamlit==1.34.0
 bs4
 streamlit-option-menu
-zipfile
