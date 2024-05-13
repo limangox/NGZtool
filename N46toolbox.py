@@ -733,7 +733,7 @@ def news_catch():
         st.markdown(img_contnt, unsafe_allow_html=True)
 
     def rajira_blog(url):
-        title, image_urls = rajira(url)
+        title,image_urls = rajira(url)
         # 创建压缩文件并下载
         if st.button("下载图片"):
             st.info('请稍等,正在将图片处理至压缩包')
