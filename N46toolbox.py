@@ -10,8 +10,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
-from script import rajira
-from script import create_zip
+from script.rajira_blog import rajira
+from script.create_zip import create_zip
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -772,6 +772,7 @@ def news_catch():
                         title = title_match.group(1)
                         # 使用正则表达式匹配图片地址
                         image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
+                        st.write(image_urls)
                         # 创建压缩文件并下载
                         if st.button("下载图片"):
                             st.info('请稍等,正在将图片处理至压缩包')
