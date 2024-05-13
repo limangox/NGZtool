@@ -26,6 +26,7 @@ def rajira(url):
     )
 
     resp_text = resp.text
+    print(resp_text)
     title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
     json_file = \
     re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
