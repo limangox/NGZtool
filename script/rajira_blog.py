@@ -2,7 +2,6 @@ import requests
 import re
 import json
 from bs4 import BeautifulSoup
-import streamlit as st
 
 
 def rajira(url):
@@ -21,7 +20,8 @@ def rajira(url):
     if resp.status_code == 200:
         resp_text = resp.text
         title = re.findall('<meta name="og:title" property="og:title" content="(.*?)">', resp_text)[0]
-        json_file = re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
+        json_file = \
+        re.findall('<script type="application/json" id="__NUXT_DATA__" data-ssr="true">(.*?)</script>', resp_text)[0]
         # print(json.dumps(json.loads(json_file),ensure_ascii=False,indent=1))
         # 使用正则表达式从地址中提取标识符
         matched_id = re.search(r'/bp/(\w+)/', url)
@@ -38,9 +38,8 @@ def rajira(url):
                 paragraph_text = matched_text.group(1)
                 # 使用正则表达式提取标题
                 title_match = re.search(r'【([^】]+)】', paragraph_text)
-                title = title_match.group(1)
-                # 使用正则表达式匹配图片地址
-                image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
-                st.write(title)
-                st.write(image_urls)
-                return title,image_urls
+                if title_match:
+                    title = title_match.group(1)
+                    # 使用正则表达式匹配图片地址
+                    image_urls = re.findall(r'!\[\]\((.*?)\)', paragraph_text)
+                    return title,image_urls
