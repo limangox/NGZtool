@@ -156,7 +156,7 @@ def blog():
       /* 在 container 上方添加空白区域（视窗高度的 20% 位置） */
       margin-top: 2vh;
     }
-    
+
     /* 在屏幕宽度小于或等于 600px 时应用以下样式 */
 @media only screen and (max-width: 600px) {
   #container {
@@ -733,9 +733,7 @@ def news_catch():
         st.markdown(img_contnt, unsafe_allow_html=True)
 
     def rajira_blog(url):
-        title,image_urls = rajira(url)
-        for i in image_urls:
-            st.write(i)
+        title, image_urls = rajira(url)
         # 创建压缩文件并下载
         if st.button("下载图片"):
             st.info('请稍等,正在将图片处理至压缩包')
@@ -753,7 +751,6 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
-    
     if 'nikkansports' in news_url:
         nikkansports(news_url)
     if 'oricon' in news_url:
