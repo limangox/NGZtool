@@ -412,7 +412,7 @@ def news_catch():
          crossorigin="anonymous"></script></head>""", unsafe_allow_html=True)
 
     news_url = st.text_input(label='请输入网址,图片在侧边栏 ')
-    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog*')
+    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web*')
 
     def nikkansports(news_url):
         if '/photonews/photonews_nsInc_' in news_url:
