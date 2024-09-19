@@ -11,6 +11,7 @@ from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
 from script.rajira_blog import rajira
 from script.create_zip import create_zip
+from script.bubka import bubka_web
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -751,6 +752,17 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
+    def bubka(url):
+        bubka_app = bubka_web(url)
+        images_list = bubka_app.get_image_urls()
+        img_contnt = '<div style="display:inline">'
+        i = 0
+        for img in range(len(images_list)):
+            pic = images_list[i]
+            img_contnt += f'''<img src='{pic}' width="30%">'''
+            i += 1
+        st.markdown(img_contnt, unsafe_allow_html=True)
+
     if 'nikkansports' in news_url:
         nikkansports(news_url)
     if 'oricon' in news_url:
@@ -761,6 +773,8 @@ def news_catch():
         mdpr(news_url)
     if 'www.nhk.jp/p/radirer/' in news_url:
         rajira_blog(news_url)
+    if 'idol-culture.jp' in news_url:
+        bubka(news_url)
 
     if news_url == '':
         pass
