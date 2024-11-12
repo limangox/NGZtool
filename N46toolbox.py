@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from script.rajira_blog import rajira
 from script.create_zip import create_zip
 from script.bubka import bubka_web
+from script.nbpress import nbpress_web
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -412,7 +413,7 @@ def news_catch():
          crossorigin="anonymous"></script></head>""", unsafe_allow_html=True)
 
     news_url = st.text_input(label='请输入网址,图片在侧边栏 ')
-    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web*')
+    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web | NBpress*')
 
     def nikkansports(news_url):
         if '/photonews/photonews_nsInc_' in news_url:
@@ -423,33 +424,34 @@ def news_catch():
             news_url,
         ).text
 
-        i = 0
+        img_list = []
 
-        imgs = []
-        orig_imgs = []
         article_title = re.findall(r'<title>(.*?)</title>', resp, re.S)[0]
+        i = 0
+        for item in resp:
+            imgs = re.findall('<meta name="nsPicture" content="(.*?)">', resp)
+            for img in imgs:
+                orig_imgs = imgs[i].replace('w500', 'w1300')
+                i += 1
+                img_list.append(orig_imgs)
+            break
+
+        st.caption(f'图片数量: {len(img_list)}')
+
+        if st.button("下载图片"):
+            st.info('请稍等,正在将图片处理至压缩包')
+            zip_filename = create_zip(article_title, img_list)
+            with open(zip_filename, "rb") as f:
+                bytes_data = f.read()
+            st.success('压缩完整,请点击下载')
+            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+
         st.subheader(article_title)
 
-        for pic in resp:
-            imgs = re.findall('<meta name="nsPicture" content="(.*?)">', resp)
-            for pic in imgs:
-                orig_imgs = imgs[i].replace('w500', 'w1300')
-                st.sidebar.image(orig_imgs, width=300)
-                i += 1
-            break
-        if 'entertainment/column/sakamichi' in news_url:
-            soup = BeautifulSoup(resp, 'html.parser')
-
-            news_div = soup.find('div', {'id': 'news'})
-            p_tags = news_div.find_all('p')
-
-            article_text = ''
-            for p in p_tags:
-                article_text += str(p)
-
-        else:
-            article_text = re.findall(r'<div id="news" class="article-body ">(.*?)</div>', resp, re.S)[0]
-        st.markdown(article_text, unsafe_allow_html=True)
+        img_contnt = '<div style="display:inline">'
+        for pic in img_list:
+            img_contnt += f'''<img src='{pic}' width="30%">'''
+        st.markdown(img_contnt, unsafe_allow_html=True)
 
     def oricon(url):
         url_new = ''
@@ -763,6 +765,28 @@ def news_catch():
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
 
+    def nbpress(url):
+        app = nbpress_web(url)
+        title, gallery_image_groups = app.get_gallery_image_groups()
+        image_count = len(gallery_image_groups)
+        st.caption(f'图片数量: {image_count}')
+
+        if st.button("下载图片"):
+            st.info('请稍等,正在将图片处理至压缩包')
+            zip_filename = create_zip(title, gallery_image_groups)
+            with open(zip_filename, "rb") as f:
+                bytes_data = f.read()
+            st.success('压缩完整,请点击下载')
+            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+        st.title(title)
+        img_contnt = '<div style="display:inline">'
+        i = 0
+        for img in range(len(gallery_image_groups)):
+            pic = gallery_image_groups[i]
+            img_contnt += f'''<img src='{pic}' width="30%">'''
+            i += 1
+        st.markdown(img_contnt, unsafe_allow_html=True)
+
     if 'nikkansports' in news_url:
         nikkansports(news_url)
     if 'oricon' in news_url:
@@ -775,6 +799,8 @@ def news_catch():
         rajira_blog(news_url)
     if 'idol-culture.jp' in news_url:
         bubka(news_url)
+    if 'nbpress.online' in news_url:
+        nbpress(news_url)
 
     if news_url == '':
         pass
