@@ -14,7 +14,7 @@ from script.create_zip import create_zip
 from script.bubka import bubka_web
 from script.nbpress import nbpress_web
 
-st.set_page_config(page_title="N46综合", layout="centered")
+st.set_page_config(page_title="N46综合", layout="wide")
 
 tz = timezone(timedelta(hours=9))
 datetime = datetime.datetime.now(tz)
