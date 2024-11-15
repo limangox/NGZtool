@@ -13,6 +13,8 @@ from script.rajira_blog import rajira
 from script.create_zip import create_zip
 from script.bubka import bubka_web
 from script.nbpress import nbpress_web
+from script.natalie import natalie_web
+import sanitize_filename
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
@@ -413,7 +415,7 @@ def news_catch():
          crossorigin="anonymous"></script></head>""", unsafe_allow_html=True)
 
     news_url = st.text_input(label='请输入网址,图片在侧边栏 ')
-    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web | NBpress*')
+    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web | NBpress | natalie *')
 
     def nikkansports(news_url):
         if '/photonews/photonews_nsInc_' in news_url:
@@ -778,7 +780,7 @@ def news_catch():
                 bytes_data = f.read()
             st.success('压缩完整,请点击下载')
             st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
-        st.title(title)
+        st.subheader(title)
         img_contnt = '<div style="display:inline">'
         i = 0
         for img in range(len(gallery_image_groups)):
@@ -786,6 +788,31 @@ def news_catch():
             img_contnt += f'''<img src='{pic}' width="30%">'''
             i += 1
         st.markdown(img_contnt, unsafe_allow_html=True)
+
+    def natalie(url):
+        app = natalie_web(url)
+        title, gallery_image_groups = app.get_gallery_image_groups()
+        if not gallery_image_groups or not title:
+            st.warning('该页面没有图片/代码异常')
+        else:
+            image_count = len(gallery_image_groups)
+            st.caption(f'图片数量: {image_count}')
+
+            if st.button("下载图片"):
+                st.info('请稍等,正在将图片处理至压缩包')
+                zip_filename = create_zip(sanitize_filename.sanitize(title), gallery_image_groups)
+                with open(zip_filename, "rb") as f:
+                    bytes_data = f.read()
+                st.success('压缩完整,请点击下载')
+                st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+            st.subheader(title)
+            img_contnt = '<div style="display:inline">'
+            i = 0
+            for img in range(len(gallery_image_groups)):
+                pic = gallery_image_groups[i]
+                img_contnt += f'''<img src='{pic}' width="30%">'''
+                i += 1
+            st.markdown(img_contnt, unsafe_allow_html=True)
 
     if 'nikkansports' in news_url:
         nikkansports(news_url)
@@ -801,6 +828,8 @@ def news_catch():
         bubka(news_url)
     if 'nbpress.online' in news_url:
         nbpress(news_url)
+    if 'natalie.mu' in news_url:
+        natalie(news_url)
 
     if news_url == '':
         pass
