@@ -9,17 +9,29 @@ import streamlit as st
 import streamlit.components.v1 as components
 from streamlit_option_menu import option_menu
 from bs4 import BeautifulSoup
+from urllib.parse import urljoin, unquote
 from script.rajira_blog import rajira
 from script.create_zip import create_zip
 from script.bubka import bubka_web
+from script.mantan import mantan_web
 from script.nbpress import nbpress_web
 from script.natalie import natalie_web
-import sanitize_filename
+from script.thetv import thetv_web
+from script.realsound import realsound_web
 
 st.set_page_config(page_title="N46综合", layout="wide")
 
 tz = timezone(timedelta(hours=9))
 datetime = datetime.datetime.now(tz)
+
+
+# 保存文件非法字符判定和修改
+def sanitize_filename(filename):
+    filename = unquote(filename)
+    filename = re.sub(r'[「」\\/*?:"<>|\s#☆.]', "_", filename)
+    parts = filename.split('-')
+    sanitized_parts = [parts[0]] + [p.replace('.', '_') for p in parts[1:]]
+    return '-'.join(sanitized_parts)
 
 
 def get_news():
@@ -80,40 +92,28 @@ def get_news():
 
 def blog():
     member_list = [{'name': '乃木坂46', 'cate': '', 'code': '10001'},
-                   {'name': '岡本 姫奈', 'cate': '5期生', 'code': '55401'},
-                   {'name': '川﨑 桜', 'cate': '5期生', 'code': '55400'},
-                   {'name': '池田 瑛紗', 'cate': '5期生', 'code': '55397'},
-                   {'name': '五百城 茉央', 'cate': '5期生', 'code': '55396'},
-                   {'name': '中西 アルノ', 'cate': '5期生', 'code': '55395'},
-                   {'name': '奥田 いろは', 'cate': '5期生', 'code': '55394'},
-                   {'name': '冨里 奈央', 'cate': '5期生', 'code': '55393'},
-                   {'name': '小川 彩', 'cate': '5期生', 'code': '55392'},
-                   {'name': '菅原 咲月', 'cate': '5期生', 'code': '55391'},
-                   {'name': '井上 和', 'cate': '5期生', 'code': '55389'},
-                   {'name': '弓木 奈於', 'cate': '4期生', 'code': '55387'},
-                   {'name': '松尾 美佑', 'cate': '4期生', 'code': '55386'},
-                   {'name': '林 瑠奈', 'cate': '4期生', 'code': '55385'},
-                   {'name': '佐藤 璃果', 'cate': '4期生', 'code': '55384'},
-                   {'name': '黒見 明香', 'cate': '4期生', 'code': '55383'},
-                   {'name': '清宮 レイ', 'cate': '4期生', 'code': '48014'},
-                   {'name': '北川 悠理', 'cate': '4期生', 'code': '48012'},
-                   {'name': '金川 紗耶', 'cate': '4期生', 'code': '48010'},
-                   {'name': '矢久保 美緒', 'cate': '4期生', 'code': '48019'},
-                   {'name': '早川 聖来', 'cate': '4期生', 'code': '48018'},
-                   {'name': '掛橋 沙耶香', 'cate': '4期生', 'code': '48009'},
-                   {'name': '賀喜 遥香', 'cate': '4期生', 'code': '48008'},
-                   {'name': '筒井 あやめ', 'cate': '4期生', 'code': '48017'},
-                   {'name': '田村 真佑', 'cate': '4期生', 'code': '48015'},
-                   {'name': '柴田 柚菜', 'cate': '4期生', 'code': '48013'},
-                   {'name': '遠藤 さくら', 'cate': '4期生', 'code': '48006'},
-                   {'name': '与田 祐希', 'cate': '3期生', 'code': '36760'},
-                   {'name': '吉田 綾乃クリスティー', 'cate': '3期生', 'code': '36759'},
-                   {'name': '山下 美月', 'cate': '3期生', 'code': '36758'},
-                   {'name': '向井 葉月', 'cate': '3期生', 'code': '36757'},
-                   {'name': '中村 麗乃', 'cate': '3期生', 'code': '36756'},
-                   {'name': '佐藤 楓', 'cate': '3期生', 'code': '36755'},
-                   {'name': '阪口 珠美', 'cate': '3期生', 'code': '36754'},
-                   {'name': '久保 史緒里', 'cate': '3期生', 'code': '36753'}]
+                   {'name': '五百城茉央', 'cate': '', 'code': '55396'},
+                   {'name': '池田瑛紗', 'cate': '', 'code': '55397'},
+                   {'name': '一ノ瀬美空', 'cate': '', 'code': '55390'},
+                   {'name': '伊藤理々杏', 'cate': '', 'code': '36749'}, {'name': '井上和', 'cate': '', 'code': '55389'},
+                   {'name': '岩本蓮加', 'cate': '', 'code': '36750'}, {'name': '梅澤美波', 'cate': '', 'code': '36751'},
+                   {'name': '遠藤さくら', 'cate': '', 'code': '48006'}, {'name': '岡本姫奈', 'cate': '', 'code': '55401'},
+                   {'name': '小川彩', 'cate': '', 'code': '55392'}, {'name': '奥田いろは', 'cate': '', 'code': '55394'},
+                   {'name': '賀喜遥香', 'cate': '', 'code': '48008'}, {'name': '金川紗耶', 'cate': '', 'code': '48010'},
+                   {'name': '川﨑桜', 'cate': '', 'code': '55400'}, {'name': '久保史緒里', 'cate': '', 'code': '36753'},
+                   {'name': '黒見明香', 'cate': '', 'code': '55383'}, {'name': '佐藤楓', 'cate': '', 'code': '36755'},
+                   {'name': '佐藤璃果', 'cate': '', 'code': '55384'}, {'name': '柴田柚菜', 'cate': '', 'code': '48013'},
+                   {'name': '菅原咲月', 'cate': '', 'code': '55391'}, {'name': '田村真佑', 'cate': '', 'code': '48015'},
+                   {'name': '筒井あやめ', 'cate': '', 'code': '48017'}, {'name': '冨里奈央', 'cate': '', 'code': '55393'},
+                   {'name': '中西アルノ', 'cate': '', 'code': '55395'}, {'name': '中村麗乃', 'cate': '', 'code': '36756'},
+                   {'name': '林瑠奈', 'cate': '', 'code': '55385'}, {'name': '松尾美佑', 'cate': '', 'code': '55386'},
+                   {'name': '向井葉月', 'cate': '', 'code': '36757'},
+                   {'name': '矢久保美緒', 'cate': '', 'code': '48019'},
+                   {'name': '弓木奈於', 'cate': '', 'code': '55387'},
+                   {'name': '吉田綾乃クリスティー', 'cate': '', 'code': '36759'},
+                   {'name': '与田祐希', 'cate': '', 'code': '36760'}, {'name': '運営スタッフ', 'cate': '', 'code': '40003'},
+                   {'name': '3期生', 'cate': '', 'code': '40004'}, {'name': '4期生', 'cate': '', 'code': '40005'},
+                   {'name': '新4期生', 'cate': '', 'code': '40001'}, {'name': '5期生', 'cate': '', 'code': '40007'}]
 
     headers = {
         'authority': 'www.nogizaka46.com',
@@ -263,13 +263,12 @@ def blog():
             if select_name == i['name']:
                 return i['code']
 
-    select_name = st.selectbox('选择成员', (
-        '乃木坂46', '与田 祐希', '吉田 綾乃クリスティー', '山下 美月', '向井 葉月', '中村 麗乃', '佐藤 楓', '阪口 珠美',
-        '久保 史緒里', '弓木 奈於', '松尾 美佑', '林 瑠奈', '佐藤 璃果', '黒見 明香', '清宮 レイ', '北川 悠理',
-        '金川 紗耶',
-        '矢久保 美緒', '早川 聖来', '掛橋 沙耶香', '賀喜 遥香', '筒井 あやめ', '田村 真佑', '柴田 柚菜', '遠藤 さくら',
-        '岡本 姫奈',
-        '川﨑 桜', '池田 瑛紗', '五百城 茉央', '中西 アルノ', '奥田 いろは', '冨里 奈央', '小川 彩', '菅原 咲月', '井上 和'))
+    select_name = st.radio('选择成员', [
+        '乃木坂46', '五百城茉央', '池田瑛紗', '一ノ瀬美空', '伊藤理々杏', '井上和', '岩本蓮加', '梅澤美波', '遠藤さくら',
+        '岡本姫奈', '小川彩', '奥田いろは', '賀喜遥香', '金川紗耶', '川﨑桜', '久保史緒里', '黒見明香', '佐藤楓',
+        '佐藤璃果', '柴田柚菜', '菅原咲月', '田村真佑', '筒井あやめ', '冨里奈央', '中西アルノ', '中村麗乃', '林瑠奈',
+        '松尾美佑', '向井葉月', '矢久保美緒', '弓木奈於', '吉田綾乃クリスティー', '与田祐希', '運営スタッフ', '3期生', '4期生',
+        '新4期生', '5期生'], horizontal=True)
 
     st_ = st.number_input('请输入页码', value=1)
 
@@ -337,12 +336,18 @@ def blog():
                 st.markdown(
                     f'<div id="container"><div class="card"><img class="list_img" src="{list_img}"><div class="blog_title">{blog_title}</div><div class="info-container"><div class="member_name">{member_name}</div>&nbsp<div class="update_date">{update_date}</div></div></div>',
                     unsafe_allow_html=True)
-                if st.button('查看BLOG', key=i):
-                    sidebar.write(
+
+                @st.dialog(f'{blog_title}', width='large')
+                def blog_viewer():
+                    st.write(
                         f'<div class="member_name">{member_name}</div>&nbsp<div class="update_date">{update_date}</div><br><br><br>' + blog_text,
                         unsafe_allow_html=True)
-                    if sidebar.button('关闭'):
-                        sidebar.empty()
+                    
+                    
+                if st.button('查看BLOG', key=i):
+                    blog_viewer()
+                    # if sidebar.button('关闭'):
+                    #     sidebar.empty()
 
                 i += 1
         except IndexError:
@@ -392,12 +397,21 @@ def blog():
                     st.markdown(
                         f'<div id="container"><div class="card"><img class="list_img" src="{list_img}"><div class="blog_title">{blog_title}</div><div class="info-container"><div class="member_name">{member_name}</div>&nbsp<div class="update_date">{update_date}</div></div></div>',
                         unsafe_allow_html=True)
-                    if st.button('查看BLOG', key=i):
-                        sidebar.write(
+
+                    @st.dialog(f'{blog_title}', width='large')
+                    def blog_viewer():
+                        st.write(
                             f'<div class="member_name">{member_name}</div>&nbsp<div class="update_date">{update_date}</div><br><br><br>' + blog_text,
                             unsafe_allow_html=True)
-                        if sidebar.button('关闭'):
-                            sidebar.empty()
+
+                    if st.button('查看BLOG', key=i):
+                        blog_viewer()
+
+                        # sidebar.write(
+                        #     f'<div class="member_name">{member_name}</div>&nbsp<div class="update_date">{update_date}</div><br><br><br>' + blog_text,
+                        #     unsafe_allow_html=True)
+                        # if sidebar.button('关闭'):
+                        #     sidebar.empty()
 
                     i += 1
             except IndexError:
@@ -415,7 +429,17 @@ def news_catch():
          crossorigin="anonymous"></script></head>""", unsafe_allow_html=True)
 
     news_url = st.text_input(label='请输入网址,图片在侧边栏 ')
-    st.caption('*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web | NBpress | natalie *')
+    st.caption(
+        '*目前支持 MDPR | 日刊Sports | Oricon news | Mantan-Web | らじらー blog | Bubka Web | NBpress | natalie | Thetv | Realsound *')
+
+    def zip_download(news_title, image_list_group):
+        if st.button("下载图片"):
+            st.info('请稍等,正在将图片处理至压缩包')
+            zip_filename = create_zip(sanitize_filename(news_title), image_list_group)
+            with open(zip_filename, "rb") as f:
+                bytes_data = f.read()
+            st.success('压缩完整,请点击下载')
+            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
 
     def nikkansports(news_url):
         if '/photonews/photonews_nsInc_' in news_url:
@@ -440,13 +464,15 @@ def news_catch():
 
         st.caption(f'图片数量: {len(img_list)}')
 
-        if st.button("下载图片"):
-            st.info('请稍等,正在将图片处理至压缩包')
-            zip_filename = create_zip(article_title, img_list)
-            with open(zip_filename, "rb") as f:
-                bytes_data = f.read()
-            st.success('压缩完整,请点击下载')
-            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+        zip_download(article_title, img_list)
+
+        # if st.button("下载图片"):
+        #     st.info('请稍等,正在将图片处理至压缩包')
+        #     zip_filename = create_zip(article_title, img_list)
+        #     with open(zip_filename, "rb") as f:
+        #         bytes_data = f.read()
+        #     st.success('压缩完整,请点击下载')
+        #     st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
 
         st.subheader(article_title)
 
@@ -466,44 +492,16 @@ def news_catch():
         article_title = re.findall('<title>(.*?)</title>', resp, re.S)[0]
         st.subheader(article_title)
 
-        # 文章正文
-        article_text1 = re.sub(re.compile(r'<.*?>'), '',
-                               re.findall('<!--StartText-->(.*?)<!--EndText-->', resp, re.S)[0])
-
-        # 第一种 script
-        script1 = re.findall(r'<div .*?>+<script>(.*?)</script></div>+', resp)
-
-        # 移除第一种 script
-        for script in script1:
-            article_text1 = article_text1.replace(script, '')
-
-        # 第二种 script
-        pattern = r"googletag\.cmd\.push\(function\(\) \{[^\}]*\}\);"
-        matches = re.findall(pattern, article_text1)
-
-        # 移除第二种 script
-        for script2 in matches:
-            article_text1 = article_text1.replace(script2, '')
-
-        # 第三种 script
-        pattern = r'<div class="gmossp_core_g939027">\s*<script>(.*?)</script>\s*</div>'
-        match = re.search(pattern, resp, re.DOTALL)
-
-        # 如果找到匹配项，提取 <script> 内容并移除
-        if match:
-            script3 = match.group(1)
-            article_text1 = article_text1.replace(script3, '')
-
-        # 输出提取的正文内容
-        st.markdown(article_text1.strip(), unsafe_allow_html=True)
-
         # 图片
         img_re = re.findall('div class="unit-photo-preview"><h2 class="title">関連写真</h2>(.*?)</div>', resp, re.S)
 
         # 输出页面部分
 
         if 'この記事の写真を見る' in resp:
-            pic_num = re.findall('この記事の写真を見る（全(.*?)枚）', resp)[0]
+            pic_num = None
+            pic_num_find = re.findall('この記事の写真を見る（全(.*?)枚）', resp)
+            if pic_num_find:
+                pic_num = pic_num_find[0]
             photo_url = f'{url_new.replace("full/", "")}photo/1/'
 
             photo_url_resp = requests.get(photo_url).text
@@ -535,6 +533,7 @@ def news_catch():
                 img_list.append(og_img)
                 i += 1
             st.caption(f'图片数量： {len(img_list)}')
+            zip_download(article_title, img_list)
             x = 0
             img_contnt = '<div style="display:inline">'
             for img in range(len(img_list)):
@@ -546,7 +545,7 @@ def news_catch():
         if 'この記事の写真を見る' not in resp and '関連写真' not in resp:
 
             img = ''.join(re.findall('<!--StartText-->(.*?)<!--EndText-->', resp, re.S))
-            img_urls = re.findall('<a\s+[^>]*href="([^"]*photo[^"]*)"[^>]*>', img)
+            img_urls = re.findall('<a\\s+[^>]*href="([^"]*photo[^"]*)"[^>]*>', img)
             i = 0
             img_list = []
             for url in img_urls:
@@ -561,6 +560,7 @@ def news_catch():
                         img_list.append(og_img)
 
             st.caption(f'图片数量： {len(img_list)}')
+            zip_download(article_title, img_list)
             x = 0
             img_contnt = '<div style="display:inline">'
             for img in range(len(img_list)):
@@ -585,6 +585,7 @@ def news_catch():
                     og_list.append(og_img)
 
             st.caption(f'图片数量： {len(og_list)}')
+            zip_download(article_title, og_list)
             x = 0
             img_contnt = '<div style="display:inline">'
             for img in range(len(og_list)):
@@ -594,112 +595,19 @@ def news_catch():
             st.markdown(img_contnt, unsafe_allow_html=True)
 
     def mantan(url):
-        global img_url
-        global url_article
-        if 'gravure' in url and 'photo' not in url:
-            img_url = url.replace('.html', '/photopage/001.html')
-            url_article = url
-        if 'photo' not in url:
-            img_url = url.replace('.html', '/photopage/001.html')
-            url_article = url
-        if 'photo' in url:
-            img_url = url
-            url_article = img_url.replace('/photopage/001.html', '.html')
 
-        headers = {
-            'referer': 'https://mantan-web.jp',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36',
-        }
+        mantan_app = mantan_web(url)
 
-        # 文字部分
-        resp = requests.get(url_article, headers=headers)
-        resp.encoding = 'utf-8'  # 指定UTF-8编码
-        html_content = resp.text
+        title, images_list = mantan_app.get_page_info()
 
-        pattern = re.compile(r'<script type="application/ld\+json">(.*?)</script>', re.DOTALL)
-        matches = pattern.findall(html_content)
-        if matches:
-            # 对匹配到的内容进行解码
-            script_content = matches[0]
+        st.caption(f'图片数量: {len(images_list)}')
+        zip_download(title, images_list)
 
-            # 提取headline字段的内容
-            headline_pattern = re.compile(r'"headline"\s*:\s*"(.*?)"')
-            headline_match = headline_pattern.search(script_content)
+        st.subheader(title)
 
-            if headline_match:
-                article_title = headline_match.group(1)
-                st.subheader(article_title)
-
-        soup = BeautifulSoup(html_content, 'html.parser')
-        # 文章部分
-        all_p_tags = soup.find_all('p', class_='article__text')
-        result_text = '<br></br>'.join([p.get_text(strip=True) for p in all_p_tags])
-        st.markdown(result_text, unsafe_allow_html=True)
-
-        # 图片部分
-        if 'gravure' in url:
-            resp = requests.get(img_url, headers=headers)
-            resp.encoding = 'utf-8'  # 指定UTF-8编码
-            img_content = resp.text
-            img_soup = BeautifulSoup(img_content, 'html.parser')
-
-            # 获取图片所在链接
-            url_list = []
-            for div_tag in img_soup.find_all('div', class_='swiper-slide'):
-                a_tag = div_tag.find('a')
-                if a_tag:
-                    href = a_tag.get('href')
-                    url_list.append(href)
-            # 获取图片链接
-            img_list = []
-            for url in url_list:
-                photo_url = f'https://gravure.mantan-web.jp{url}'
-                photo_url_resp = requests.get(photo_url, headers=headers).text
-                img_soup = BeautifulSoup(photo_url_resp, 'html.parser')
-                img_div = img_soup.find('div', class_='photo__photo--minh')
-                if img_div:
-                    # 查找div标签下的img标签
-                    img_tag = img_div.find('img')
-
-                    if img_tag:
-                        img_src = img_tag.get('src')
-                        img_list.append(img_src)
-
-            i = 0
-            img_contnt = '<div style="display:inline">'
-            for img in range(len(img_list)):
-                pic = img_list[i].split('?')[0]
-                img_contnt += f'''<img src='{pic}' width="50%">'''
-                i += 1
-            st.markdown(img_contnt, unsafe_allow_html=True)
-
-        # 没有gravure
-        resp = requests.get(img_url, headers=headers)
-        resp.encoding = 'utf-8'  # 指定UTF-8编码
-        img_content = resp.text
-        img_soup = BeautifulSoup(img_content, 'html.parser')
-
-        script_content = []
-        for script_tag in img_soup.find_all('script'):
-            if 'var __images = JSON.parse' in script_tag.text:
-                script_content = script_tag.text
-                break
-        img_list = []
-        if script_content:
-            # 使用正则表达式提取JSON内容部分
-            json_match = script_content.split("('")[1].replace("')", '')
-            list_ = json.loads(json_match)
-            i = 0
-            for img in list_:
-                pic = list_[i]['src']
-                img_list.append(pic)
-                i += 1
-        i = 0
         img_contnt = '<div style="display:inline">'
-        for img in range(len(img_list)):
-            pic = img_list[i].split('?')[0]
-            img_contnt += f'''<img src='{pic}' width="50%">'''
-            i += 1
+        for img in range(len(images_list)):
+            img_contnt += f'''<img src='{img}' width="50%">'''
         st.markdown(img_contnt, unsafe_allow_html=True)
 
     def mdpr(url):
@@ -717,36 +625,39 @@ def news_catch():
         mdpr_photo_resp = requests.get(url, headers=mdpr_headers).text
         # 标题
         mdpr_arti_title = re.findall('<h1 class="p-articleHeader__title">(.*?)</h1>', mdpr_photo_resp)[0]
-        st.subheader(mdpr_arti_title, anchor='title')
 
         soup = BeautifulSoup(mdpr_photo_resp, 'html.parser')
-        # 获取头图
-        imageWrapper = soup.find('img', {'class': 'c-image__image'}).get('src').split('?')[0]
 
         img_list = re.findall('<img src="(.*?)" alt=".*" width="125"', mdpr_photo_resp)
         i = 0
         x = 1
         st.caption(f'图片数量：{len(img_list) + 1}')
-        # 图片展示
-        st.markdown(f"""<div><img src='{imageWrapper}' width="30%"></div>""", unsafe_allow_html=True)
         i = 0
+        new_image_list = []
+        # 获取头图
+        imageWrapper = soup.find('img', {'class': 'c-image__image'}).get('src').split('?')[0]
+
+        new_image_list.append(imageWrapper)
         img_contnt = '<div style="display:inline">'
         for img in range(len(img_list)):
             pic = img_list[i].split('?')[0]
+            new_image_list.append(pic)
             img_contnt += f'''<img src='{pic}' width="30%">'''
             i += 1
+
+        zip_download(mdpr_arti_title, new_image_list)
+
+        st.subheader(mdpr_arti_title, anchor='title')
+
+        # 图片展示
+        st.markdown(f"""<div><img src='{imageWrapper}' width="30%"></div>""", unsafe_allow_html=True)
+
         st.markdown(img_contnt, unsafe_allow_html=True)
 
     def rajira_blog(url):
         title, image_urls = rajira(url)
         # 创建压缩文件并下载
-        if st.button("下载图片"):
-            st.info('请稍等,正在将图片处理至压缩包')
-            zip_filename = create_zip(title, image_urls)
-            with open(zip_filename, "rb") as f:
-                bytes_data = f.read()
-            st.success('压缩完整,请点击下载')
-            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+        zip_download(title, image_urls)
         st.title(title)
         i = 0
         img_contnt = '<div style="display:inline">'
@@ -758,7 +669,12 @@ def news_catch():
 
     def bubka(url):
         bubka_app = bubka_web(url)
-        images_list = bubka_app.get_image_urls()
+        title, images_list = bubka_app.get_image_urls()
+        image_count = len(images_list)
+        st.caption(f'图片数量: {image_count}')
+
+        zip_download(title, images_list)
+        st.subheader(title)
         img_contnt = '<div style="display:inline">'
         i = 0
         for img in range(len(images_list)):
@@ -773,13 +689,8 @@ def news_catch():
         image_count = len(gallery_image_groups)
         st.caption(f'图片数量: {image_count}')
 
-        if st.button("下载图片"):
-            st.info('请稍等,正在将图片处理至压缩包')
-            zip_filename = create_zip(title, gallery_image_groups)
-            with open(zip_filename, "rb") as f:
-                bytes_data = f.read()
-            st.success('压缩完整,请点击下载')
-            st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+        zip_download(title, gallery_image_groups)
+
         st.subheader(title)
         img_contnt = '<div style="display:inline">'
         i = 0
@@ -798,13 +709,42 @@ def news_catch():
             image_count = len(gallery_image_groups)
             st.caption(f'图片数量: {image_count}')
 
-            if st.button("下载图片"):
-                st.info('请稍等,正在将图片处理至压缩包')
-                zip_filename = create_zip(sanitize_filename.sanitize(title), gallery_image_groups)
-                with open(zip_filename, "rb") as f:
-                    bytes_data = f.read()
-                st.success('压缩完整,请点击下载')
-                st.download_button(label="点击下载", data=bytes_data, file_name=zip_filename)
+            zip_download(title, gallery_image_groups)
+            st.subheader(title)
+            img_contnt = '<div style="display:inline">'
+            i = 0
+            for img in range(len(gallery_image_groups)):
+                pic = gallery_image_groups[i]
+                img_contnt += f'''<img src='{pic}' width="30%">'''
+                i += 1
+            st.markdown(img_contnt, unsafe_allow_html=True)
+
+    def thetv(url):
+        app = thetv_web(url)
+        title, image_count, gallery_image_groups = app.get_gallery_info()
+        if not any([title, image_count, gallery_image_groups]):
+            st.warning('该页面没有图片/代码异常')
+        else:
+            st.caption(f'图片数量: {image_count}')
+            zip_download(title, gallery_image_groups)
+            st.subheader(title)
+            img_contnt = '<div style="display:inline">'
+            i = 0
+            for img in range(len(gallery_image_groups)):
+                pic = gallery_image_groups[i]
+                img_contnt += f'''<img src='{pic}' width="30%">'''
+                i += 1
+            st.markdown(img_contnt, unsafe_allow_html=True)
+
+    def realsound(url):
+        app = realsound_web(url)
+        title, gallery_image_groups = app.get_image_info()
+        if not any([title, gallery_image_groups]):
+            st.warning('该页面没有图片/代码异常')
+        else:
+            image_count = len(gallery_image_groups)
+            st.caption(f'图片数量: {image_count}')
+            zip_download(title, gallery_image_groups)
             st.subheader(title)
             img_contnt = '<div style="display:inline">'
             i = 0
@@ -830,6 +770,10 @@ def news_catch():
         nbpress(news_url)
     if 'natalie.mu' in news_url:
         natalie(news_url)
+    if 'thetv.jp' in news_url:
+        thetv(news_url)
+    if 'realsound.jp' in news_url:
+        realsound(news_url)
 
     if news_url == '':
         pass
