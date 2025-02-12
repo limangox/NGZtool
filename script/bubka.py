@@ -9,6 +9,7 @@ class bubka_web:
     def __init__(self, url):
         self.url = url
         self.main_url = 'https://www.idol-culture.jp'
+        self.title = None
         if 'attachment_id' not in self.url:
             self.url = self.get_gallery_url()
 
@@ -23,6 +24,7 @@ class bubka_web:
     def get_gallery_url(self):
         resp = requests.get(self.url, headers=self.headers())
         soup = BeautifulSoup(resp.text, 'html.parser')
+        self.title = soup.find('title').text
         attachment_link_area = soup.find('div', class_='btn_post_attachment_link')
         attachment_link = attachment_link_area.find('a')['href']
         return attachment_link
@@ -34,5 +36,5 @@ class bubka_web:
         ul_ = entrybody.find('ul', class_='post_attachment_thumbnail')
         if ul_:
             lis = ul_.find_all('li')
-            image_urls = [self.main_url + li.find('img')['src'].replace('-300x300','') for li in lis]
-            return image_urls
+            image_urls = [self.main_url + li.find('img')['src'].replace('-300x300', '') for li in lis]
+            return self.title, image_urls

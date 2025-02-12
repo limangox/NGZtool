@@ -21,6 +21,7 @@ class natalie_web:
         response = self.session.get(self.url)
         soup = BeautifulSoup(response.text, 'html.parser')
         title = soup.find('title').text
+
         gallery_group = soup.find('div', class_="NA_article_gallery")
 
         if gallery_group:
@@ -37,6 +38,40 @@ class natalie_web:
                     image_url = item.find('img')['data-src'].split('?')[0]
                     image_list.append(image_url)
             return title, image_list
-        else:
-            return None
 
+        if not gallery_group:
+            try:
+                # 第一页
+
+                meta_image = soup.find('meta', attrs={'property': 'og:image'})['content'].split('?')[0]
+
+                image_list.append(meta_image)
+
+                article_class = soup.find('article', class_='NA_powerpush')
+                PP_header = article_class.find('div', class_='PP_header')
+                if PP_header:
+                    header_image = PP_header.find('h1').find('img')['src'].split('?')[0]
+                    image_list.append(header_image)
+
+                if article_class:
+                    image_blocks = article_class.find_all('img', class_='lazyload')
+                    for img in image_blocks:
+                        image_list.append(img['data-src'].split('?')[0])
+
+                # 查找是否有其他页
+                PP_pager_next = soup.find('li', class_='PP_pager_next')
+                if PP_pager_next:
+                    next_page_url = PP_pager_next.find('a')['href']
+                    next_page_resp = self.session.get(next_page_url)
+                    next_page_soup = BeautifulSoup(next_page_resp.text, 'html.parser')
+                    article_class_next = next_page_soup.find('article', class_='NA_powerpush')
+                    if article_class_next:
+                        image_blocks = article_class_next.find_all('img', class_='lazyload')
+                        for img in image_blocks:
+                            image_list.append(img['data-src'].split('?')[0])
+                    return title, image_list
+                else:
+                    return title, image_list
+            except Exception as e:
+                print(e)
+                return None, None
